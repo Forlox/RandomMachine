@@ -29,10 +29,6 @@ public class RandomMachine {
             }
         }
 
-        if (k>=50){
-            System.out.println("Числа повторяются >50 раз");
-            lcmRandom();
-        }
         kLcm=k;
 
         return result;
@@ -55,10 +51,6 @@ public class RandomMachine {
             }
         }
 
-        if (k>=50){
-            System.out.println("Числа повторяются >50 раз");
-            lcmRandom();
-        }
         kjava=k;
 
         return result;
