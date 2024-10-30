@@ -1,4 +1,6 @@
 import java.util.Random;
+import java.util.HashMap;
+
 
 public class RandomMachine {
     static int countOfNumbers = 1000000;
@@ -11,46 +13,47 @@ public class RandomMachine {
 
     static long seed = System.currentTimeMillis(); // начальное значение
 
+    static int firstCopyLcm;
     static double[] lcmRandom() {
         double[] result = new double[countOfNumbers];
         long x = seed;  // начальное значение
+        HashMap<Double, Integer> seenNumbers = new HashMap<>();  // Хэш-таблица для хранения чисел и их позиций
+        int periodLength = 0;
+
         for (int i = 0; i < result.length; i++) {
             x = (a * x + c) % m;
             result[i] = (double) x / m; // нормализация числа в [0, 1]
-        }
 
-        int k=0;
-        for (int i=1;i<countOfNumbers;i++){
-            if (result[i-1]==result[i]){
-                k++;
-            }
-            if (k==50){
+            // Проверка на повтор
+            if (seenNumbers.containsKey(result[i])) {
+                periodLength = i - seenNumbers.get(result[i]);  // Длина периода
                 break;
+            } else {
+                seenNumbers.put(result[i], i);  // Сохраняем число и его индекс
             }
         }
-        kLcm=k;
 
+        firstCopyLcm = periodLength;  // Сохраняем длину периода в переменной firstCopy
         return result;
     }
 
+    static int firstCopyJava;
     static double[] javaRandom() {
         Random random = new Random();
         double[] result = new double[countOfNumbers];
+        HashMap<Double, Integer> seenNumbers = new HashMap<>();  // Хэш-таблица для хранения чисел и их позиций
+        int periodLength=0;
         for (int i = 0; i < result.length; i++) {
             result[i] = random.nextDouble();
-        }
 
-        int k=0;
-        for (int i=1;i<countOfNumbers;i++){
-            if (result[i-1]==result[i]){
-                k++;
-            }
-            if (k==50){
+            // Проверка на повтор
+            if (seenNumbers.containsKey(result[i])) {
+                periodLength = i - seenNumbers.get(result[i]);  // Длина периода
                 break;
+            } else {
+                seenNumbers.put(result[i], i);  // Сохраняем число и его индекс
             }
         }
-
-        kjava=k;
 
         return result;
     }
@@ -92,7 +95,7 @@ public class RandomMachine {
         double[] javaGeneratedNumbers = javaRandom();
 
         System.out.println("Линейный конгруэнтный метод:");
-        System.out.println("Количество повторений чисел: "+kLcm);
+        System.out.println("Первое повторение на: "+firstCopyLcm);
         System.out.printf("Мат ожидание: %.6f\n", mathExpectation(generatedNumbers));
         System.out.printf("Дисперсия: %.6f\n", dispersion(generatedNumbers));
         System.out.printf("Частотный тест: %.6f\n", frequencyTest(generatedNumbers, 0.5-Math.sqrt(dispersion(generatedNumbers)), 0.5+Math.sqrt(dispersion(generatedNumbers)) ));
@@ -101,7 +104,7 @@ public class RandomMachine {
         System.out.println();
 
         System.out.println("Генератор Java:");
-        System.out.println("Количество повторений чисел: "+kjava);
+        System.out.println("Первое повторение на: "+firstCopyJava);
         System.out.printf("Мат ожидание: %.6f\n", mathExpectation(javaGeneratedNumbers));
         System.out.printf("Дисперсия: %.6f\n", dispersion(javaGeneratedNumbers));
         System.out.printf("Частотный тест: %.6f\n", frequencyTest(javaGeneratedNumbers, 0.5-Math.sqrt(dispersion(javaGeneratedNumbers)), 0.5+Math.sqrt(dispersion(javaGeneratedNumbers)) ));
