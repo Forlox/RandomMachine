@@ -4,6 +4,7 @@ public class RandomMachine {
     static int countOfNumbers = 1000000;
     static int kLcm, kjava;
 
+
     static long a = 1664525;    // множитель
     static long c = 1013904223; // приращение
     static long m = (long) Math.pow(2, 32); // модуль
